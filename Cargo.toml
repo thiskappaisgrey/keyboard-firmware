@@ -5,22 +5,33 @@ version = "0.1.0"
 
 [dependencies]
 cortex-m = "0.7"
-cortex-m-rt = "0.7"
-embedded-hal = { version = "0.2.5", features = ["unproven"] }
+# cortex-m-rt = "0.7"
+embedded-hal = { version = "0.2.7", features = ["unproven"] }
 
-defmt = "0.3"
-defmt-rtt = "0.4"
-panic-probe = { version = "0.3", features = ["print-defmt"] }
+# defmt = "0.3"
+# defmt-rtt = "0.4"
+panic-probe = "0.3"
+sparkfun-pro-micro-rp2040 = "0.6.0"
+smart-leds = "0.3.0"
+pio = "0.2.1"
+ws2812-pio = "0.6.0"
+nb = "1.1.0"
+panic-halt = "0.2.0"
 
-# We're using a Pico by default on this template
-rp-pico = "0.7"
-
-# but you can use any BSP. Uncomment this to use the pro_micro_rp2040 BSP instead
-# sparkfun-pro-micro-rp2040 = "0.6"
-
-# If you're not going to use a Board Support Package you'll need these:
+# TODO might need this for the USB stuff
 # rp2040-hal = { version="0.8", features=["rt", "critical-section-impl"] }
+# Not sure what this does yet..
 # rp2040-boot2 = "0.2"
+
+
+# keyberon= {git = "https://github.com/TeXitoi/keyberon", rev="24bd53f850bb5f07b1eee36fe3ac75082d439c10" }
+# usb-device = "0.2.9"
+rtic = {version="2.0.0", git="https://github.com/rtic-rs/rtic", features=["thumbv6-backend"]}
+rtic-monotonics = {version="1.0.0", git="https://github.com/rtic-rs/rtic", features=["rp2040"]}
+rp-pico = "0.7.0"
+fugit = "0.3"
+rp2040-pac = "0.4.0"
+
 
 # cargo build/run
 [profile.dev]
