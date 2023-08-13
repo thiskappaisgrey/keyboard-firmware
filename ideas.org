@@ -1,0 +1,5 @@
+* Ideas for this project
+** TODO Write a scripting language that runs on the raspbery pi pico
+** TODO Be able to add actions that can be added when a key is pressed in an FRP style
+- For example, on a "doublepress" (keys pressed twice with a certain threshold) do something, on a "longpress" do something else.
+- Compose keymaps / layers together.
