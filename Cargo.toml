@@ -5,32 +5,34 @@ version = "0.1.0"
 
 [dependencies]
 cortex-m = "0.7"
-# cortex-m-rt = "0.7"
+cortex-m-rt = "0.7"
 embedded-hal = { version = "0.2.7", features = ["unproven"] }
 
-# defmt = "0.3"
-# defmt-rtt = "0.4"
-panic-probe = "0.3"
+defmt = "0.3"
+defmt-rtt = "0.4"
+# panic-probe = { version = "0.3", features = ["print-defmt"] }
 sparkfun-pro-micro-rp2040 = "0.6.0"
 smart-leds = "0.3.0"
 pio = "0.2.1"
 ws2812-pio = "0.6.0"
+fugit = "0.3"
 nb = "1.1.0"
-panic-halt = "0.2.0"
+# panic-halt = "0.2.0"
+
+usb-device = "0.2.9"
+usbd-serial = "0.1.1"
 
 # TODO might need this for the USB stuff
-rp2040-hal = { version="0.8", features=["rt", "critical-section-impl"] }
+# rp2040-hal = { version="0.8", features=["rt", "critical-section-impl"] }
 # Not sure what this does yet..
 # rp2040-boot2 = "0.2"
 
 
 keyberon= {git = "https://github.com/TeXitoi/keyberon", rev="24bd53f850bb5f07b1eee36fe3ac75082d439c10" }
-usb-device = "0.2.9"
-rtic = {version="2.0.0", git="https://github.com/rtic-rs/rtic", features=["thumbv6-backend"]}
-rtic-monotonics = {version="1.0.0", git="https://github.com/rtic-rs/rtic", features=["rp2040"]}
-fugit = "0.3"
-rp2040-pac = "0.4.0"
-embedded-time = "0.12.1"
+# rtic = {version="2.0.0", git="https://github.com/rtic-rs/rtic", features=["thumbv6-backend"]}
+# rtic-monotonics = {version="1.0.0", git="https://github.com/rtic-rs/rtic", features=["rp2040"]}
+# rp2040-pac = "0.4.0"
+# embedded-time = "0.12.1"
 
 
 # cargo build/run

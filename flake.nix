@@ -21,7 +21,7 @@
             probe-run
             flip-link
             elf2uf2-rs
- 
+            tio 
           ];
         };
 

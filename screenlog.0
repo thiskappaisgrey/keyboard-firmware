@@ -1,0 +1,12 @@
+:q:^[q[?2004h
+[1;32m[]0;thanawat@thanawat-um560: ~/projects/embedded/keyboard-firmwarethanawat@thanawat-um560:~/projects/embedded/keyboard-firmware]$[0m :q[K[Kq
+[?2004lThe program 'q' is not in your PATH. It is provided by several packages.
+You can make it available in an ephemeral shell by typing one of the following:
+  nix-shell -p q
+  nix-shell -p q-text-as-data
+[?2004h
+[1;32m[]0;thanawat@thanawat-um560: ~/projects/embedded/keyboard-firmwarethanawat@thanawat-um560:~/projects/embedded/keyboard-firmware]$[0m quit
+[?2004lquit: command not found
+[?2004h
+[1;32m[]0;thanawat@thanawat-um560: ~/projects/embedded/keyboard-firmwarethanawat@thanawat-um560:~/projects/embedded/keyboard-firmware]$[0m exit
+[?2004lexit
