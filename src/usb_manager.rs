@@ -26,6 +26,8 @@ impl UsbManager {
     }
 
     // I think this triggers when sending data to the serial port..?
+    // TODO only 1 write can happen at the same time.. so you may panic..?
+
     pub unsafe fn interrupt(&mut self) {
         if self.device.poll(&mut [&mut self.serial]) {
             // on interrupt - try to read from serial. If data is read
@@ -34,8 +36,24 @@ impl UsbManager {
             match self.serial.read(&mut buf) {
                 Err(_e) => {}
                 Ok(0) => {}
-                Ok(_count) => {
-                    self.write_serial("pong\r\n");
+                Ok(count) => {
+                    // Simple echo,
+                    let data = &buf[0..count];
+                    self.write_serial("read: ");
+                    match self.serial.write(data) {
+                        Ok(_len) => {}
+                        Err(UsbError::WouldBlock) => {
+                            // if the usb would block, try to flush the data..?
+                            self.serial.flush().unwrap();
+                            return;
+                        }
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                    self.write_serial("\r\n");
+
+                    // self.write_serial("pong\r\n");
                 }
             }
         }
@@ -43,35 +61,30 @@ impl UsbManager {
     pub fn write_serial(&mut self, s: &str) {
         let write_ptr = s.as_bytes();
 
-        self.serial.write(write_ptr).unwrap();
+        match self.serial.write(write_ptr) {
+            Ok(_len) => {}
+            Err(UsbError::WouldBlock) => {
+                // if the usb would block, try to flush the data..?
+                self.serial.flush().unwrap();
+                return;
+            }
+            Err(_) => {
+                return;
+            }
+        }
         self.serial.flush().unwrap();
     }
 }
 
 impl core::fmt::Write for UsbManager {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        let write_ptr = s.as_bytes();
-        let mut index = 0;
-
-        // Because the buffer is of constant size and initialized to zero (0) we here
-        // add a test to determine the size that's really occupied by the str that we
-        // wan't to send. From index zero to first byte that is as the zero byte value.
-        while index < write_ptr.len() && write_ptr[index] != 0 {
-            index += 1;
-        }
-        let mut write_ptr = &write_ptr[0..index];
-        while !write_ptr.is_empty() {
-            match self.serial.write(write_ptr) {
-                Ok(len) => write_ptr = &write_ptr[len..],
-                Err(UsbError::WouldBlock) => {
-                    break;
-                }
-                Err(_) => break,
-            }
-        }
-        let _ = self.serial.flush();
-        // self.serial.write(s.as_bytes()).unwrap();
-
+        // Just write the result without checking
+        // TODO Might want some more elaborate serial checking
+        // To see if the buffer is full, etc.
+        // Not super elaborate - but maybe there's a better way to handle sending massive amounts of data..?
+        // Since you can only send up to 64 bytes before filling the buffer..
+        self.serial.write(s.as_bytes()).unwrap();
+        self.serial.flush().unwrap();
         Ok(())
     }
 }

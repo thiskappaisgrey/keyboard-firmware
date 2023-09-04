@@ -28,6 +28,7 @@ use sparkfun_pro_micro_rp2040::{
         pac,
         pac::interrupt,
         pio::PIOExt,
+        rom_data,
         timer::Timer,
         usb::UsbBus,
         watchdog::Watchdog,
@@ -59,6 +60,8 @@ fn panic(_: &PanicInfo) -> ! {
     if let Some(usb) = unsafe { USB_MANAGER.as_mut() } {
         usb.write_serial("Panicked!\r\n");
     }
+    // reset into usb boot on panic
+    rom_data::reset_to_usb_boot(0, 0);
     loop {}
 }
 
@@ -117,35 +120,12 @@ fn main() -> ! {
         USB_MANAGER.as_mut().unwrap()
     };
 
-    let mut usb_class = keyberon::new_class(unsafe { USB_BUS.as_ref().unwrap() }, ());
-    let mut usb_dev = keyberon::new_device(unsafe { USB_BUS.as_ref().unwrap() });
+    // let mut usb_class = keyberon::new_class(unsafe { USB_BUS.as_ref().unwrap() }, ());
+    // let mut usb_dev = keyberon::new_device(unsafe { USB_BUS.as_ref().unwrap() });
 
-    // The matrix scanning -
-    // every row is pulled low, then each column pin is tested
-    // to see if it's low or not.
-    // Row pin is set high initially.
-    let mut matrix: Matrix<DynPin, DynPin, 7, 5> = Matrix::new(
-        [
-            pins.adc3.into_pull_up_input().into(),
-            pins.adc2.into_pull_up_input().into(),
-            pins.adc1.into_pull_up_input().into(),
-            pins.adc0.into_pull_up_input().into(),
-            pins.sck.into_pull_up_input().into(),
-            pins.cipo.into_pull_up_input().into(),
-            pins.copi.into_pull_up_input().into(),
-        ],
-        [
-            pins.gpio4.into_push_pull_output().into(),
-            pins.gpio5.into_push_pull_output().into(),
-            pins.gpio6.into_push_pull_output().into(),
-            pins.gpio7.into_push_pull_output().into(),
-            pins.tx1.into_push_pull_output().into(),
-        ],
-    )
-    .unwrap();
-    // The debouncer in keyberon creates the events
-    let mut debouncer = Debouncer::new([[false; 7]; 5], [[false; 7]; 5], 20);
-    let mut layout = Layout::new(&LAYERS);
+    // // The debouncer in keyberon creates the events
+    // let mut debouncer = Debouncer::new([[false; 7]; 5], [[false; 7]; 5], 20);
+    // let mut layout = Layout::new(&LAYERS);
 
     // TODO Enable UART as well - I need the rx pin
     // to be doing tx/rx depending on whether it's the master or slave.
@@ -181,6 +161,9 @@ fn main() -> ! {
         // if deb_events.count() > 1 {
         //     usb.write_serial("Events greater than 1");
         // }
+
+        // TODO I need some sort of lock for this
+        // Since it will panic if I try to write from multiple places at the same time..
         usb.write_serial("LED\r\n");
 
         // delay for 1 millisecond to allow the
